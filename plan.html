@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Business Plan Generator - One-Page Plan in 30 Seconds</title>
+<meta name="description" content="Generate a one-page business plan, investor pitch script, or cold email instantly. Free AI-powered startup toolkit.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',-apple-system,sans-serif;color:#1a1a1a;background:#f8f9fa;min-height:100vh}.wrap{max-width:680px;margin:0 auto;padding:32px 20px}h1{font-size:28px;font-weight:700;letter-spacing:-0.02em;margin-bottom:4px}.sub{font-size:14px;color:#666;margin-bottom:24px}.badge{display:inline-block;background:#FFF3E0;color:#E65100;font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;margin-bottom:16px}label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:#333}input,textarea,select{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;margin-bottom:16px;font-family:inherit;background:#fff}textarea{min-height:70px;resize:vertical}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}button{background:#1a1a1a;color:#fff;border:none;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;width:100%}button:disabled{background:#ccc;cursor:not-allowed}button:hover:not(:disabled){background:#333}.output{background:#fff;border:1px solid #eee;border-radius:8px;padding:24px;margin-top:24px;white-space:pre-wrap;font-size:14px;line-height:1.7}.copy-btn{background:#fff;border:1px solid #ddd;color:#333;padding:8px 16px;border-radius:6px;font-size:13px;cursor:pointer;margin-top:12px;width:auto;font-weight:500}.back{font-size:13px;color:#666;margin-bottom:24px;display:block}.tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid #eee}.tab{padding:10px 20px;font-size:14px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:#888}.tab.active{border-bottom-color:#1a1a1a;color:#1a1a1a;font-weight:600}@media(max-width:600px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a href="/" class="back">&larr; Back to all tools</a>
+<div class="badge">AI STARTUP TOOLKIT</div>
+<h1>Business Plan + Pitch + Email</h1>
+<p class="sub">Three tools in one. Generate a business plan, investor pitch, or outreach email.</p>
+
+<div class="tabs">
+<div class="tab active" onclick="switchTab('plan',this)">Business Plan</div>
+<div class="tab" onclick="switchTab('pitch',this)">Pitch Script</div>
+<div class="tab" onclick="switchTab('email',this)">Investor Email</div>
+</div>
+
+<div id="plan-form">
+<div class="grid">
+<div><label>Business Name *</label><input id="p-name" placeholder="Acme AI"></div>
+<div><label>Industry</label><select id="p-industry"><option>Technology / SaaS</option><option>E-commerce</option><option>Fintech</option><option>Healthcare</option><option>Education</option><option>Food & Beverage</option><option>Agency / Services</option><option>Marketplace</option><option>Other</option></select></div>
+</div>
+<label>What does the business do? *</label>
+<textarea id="p-desc" placeholder="AI-powered inventory management for small restaurants..."></textarea>
+<label>Target market</label>
+<input id="p-market" placeholder="Independent restaurants with 1-3 locations">
+<div class="grid">
+<div><label>Revenue Model</label><select id="p-rev"><option>Subscription</option><option>Transaction fees</option><option>Marketplace</option><option>One-time purchase</option><option>Freemium</option><option>Services</option></select></div>
+<div><label>Stage</label><select id="p-stage"><option>Idea</option><option>MVP / Beta</option><option>Early revenue</option><option>Growing</option><option>Scaling</option></select></div>
+</div>
+<button onclick="genPlan()">Generate Business Plan</button>
+</div>
+
+<div id="pitch-form" style="display:none">
+<label>Business Name *</label><input id="pi-name" placeholder="Acme AI">
+<label>Problem you solve *</label><textarea id="pi-problem" placeholder="Restaurants waste 30% of inventory..."></textarea>
+<label>Your solution *</label><textarea id="pi-solution" placeholder="AI that predicts daily demand..."></textarea>
+<label>Traction (optional)</label><input id="pi-traction" placeholder="12 restaurants, $8K MRR">
+<label>The ask (optional)</label><input id="pi-ask" placeholder="$500K seed round">
+<button onclick="genPitch()">Generate Pitch Script</button>
+</div>
+
+<div id="email-form" style="display:none">
+<label>Your Business *</label><input id="e-biz" placeholder="Acme AI">
+<label>Investor / Recipient</label><input id="e-to" placeholder="Sarah Chen at Sequoia">
+<label>Context *</label><textarea id="e-ctx" placeholder="Raising $500K seed. AI inventory for restaurants. 12 paying customers, $8K MRR. Want a 15-min call."></textarea>
+<button onclick="genEmail()">Generate Investor Email</button>
+</div>
+
+<div id="result" style="display:none">
+<div class="output" id="output"></div>
+<button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('output').textContent);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy to clipboard',2000)">Copy to clipboard</button>
+</div>
+</div>
+
+<script>
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['plan','pitch','email'].forEach(f=>document.getElementById(f+'-form').style.display='none');
+  document.getElementById(tab+'-form').style.display='block';
+  document.getElementById('result').style.display='none';
+}
+async function callAI(prompt) {
+  document.getElementById('result').style.display='none';
+  const btns=document.querySelectorAll('button:not(.copy-btn)');
+  btns.forEach(b=>{b.disabled=true;b.dataset.orig=b.textContent;b.textContent='Writing...'});
+  try {
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const d=await r.json();
+    document.getElementById('output').textContent=d.content?.map(i=>i.text||'').join('\n')||'Error';
+    document.getElementById('result').style.display='block';
+  } catch(e){document.getElementById('output').textContent='Error: '+e.message;document.getElementById('result').style.display='block';}
+  btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.orig});
+}
+function genPlan(){
+  const n=document.getElementById('p-name').value,d=document.getElementById('p-desc').value;
+  if(!n||!d)return;
+  callAI(`Concise one-page business plan. No placeholders. Real content.\nBusiness: ${n}\nIndustry: ${document.getElementById('p-industry').value}\nDescription: ${d}\nTarget: ${document.getElementById('p-market').value}\nRevenue: ${document.getElementById('p-rev').value}\nStage: ${document.getElementById('p-stage').value}\n\nHeaders: EXECUTIVE SUMMARY (3 sentences) > PROBLEM > SOLUTION > TARGET MARKET > BUSINESS MODEL > COMPETITIVE ADVANTAGE > GO-TO-MARKET (3 steps) > FINANCIAL SNAPSHOT > TEAM NEEDS. 2-4 sentences each.`);
+}
+function genPitch(){
+  const n=document.getElementById('pi-name').value,p=document.getElementById('pi-problem').value;
+  if(!n||!p)return;
+  callAI(`60-second investor pitch script. Conversational, confident. Under 200 words.\nBusiness: ${n}\nProblem: ${p}\nSolution: ${document.getElementById('pi-solution').value}\n${document.getElementById('pi-traction').value?'Traction: '+document.getElementById('pi-traction').value:''}\n${document.getElementById('pi-ask').value?'Ask: '+document.getElementById('pi-ask').value:''}\n\nStructure: Hook > Problem > Solution > Why now > Traction > Ask.`);
+}
+function genEmail(){
+  const b=document.getElementById('e-biz').value,c=document.getElementById('e-ctx').value;
+  if(!b||!c)return;
+  callAI(`Cold investor outreach email. Under 150 words. One clear ask. No "hope this finds you well."\nFrom: ${b}\nTo: ${document.getElementById('e-to').value||'Investor'}\nContext: ${c}\n\nInclude subject line. Open with something specific to them.`);
+}
+</script>
+</body>
+</html>
