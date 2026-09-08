@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Proposal Generator - Client Proposals in 30 Seconds</title>
+<meta name="description" content="Generate professional client proposals instantly. Enter the details, get a ready-to-send proposal.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,sans-serif;color:#1a1a1a;background:#f8f9fa;min-height:100vh}
+.wrap{max-width:680px;margin:0 auto;padding:32px 20px}
+h1{font-size:28px;font-weight:700;letter-spacing:-0.02em;margin-bottom:4px}
+.sub{font-size:14px;color:#666;margin-bottom:32px}
+.badge{display:inline-block;background:#E8F5E9;color:#2E7D32;font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;margin-bottom:16px}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:#333}
+input,textarea,select{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;margin-bottom:16px;font-family:inherit;background:#fff}
+textarea{min-height:80px;resize:vertical}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+button{background:#1a1a1a;color:#fff;border:none;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;width:100%}
+button:disabled{background:#ccc;cursor:not-allowed}
+button:hover:not(:disabled){background:#333}
+.output{background:#fff;border:1px solid #eee;border-radius:8px;padding:24px;margin-top:24px;white-space:pre-wrap;font-size:14px;line-height:1.7}
+.copy-btn{background:#fff;border:1px solid #ddd;color:#333;padding:8px 16px;border-radius:6px;font-size:13px;cursor:pointer;margin-top:12px;width:auto;font-weight:500}
+.back{font-size:13px;color:#666;margin-bottom:24px;display:block}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a href="/" class="back">← Back to all tools</a>
+<div class="badge">AI-POWERED</div>
+<h1>Proposal Generator</h1>
+<p class="sub">Fill in the details, get a ready-to-send client proposal in seconds.</p>
+
+<div class="grid">
+<div><label>Client Name *</label><input id="client" placeholder="Acme Corp"></div>
+<div><label>Project Type</label>
+<select id="type"><option>Website Development</option><option>Mobile App</option><option>Brand Identity</option><option>Marketing Strategy</option><option>SEO & Content</option><option>E-commerce Build</option><option>Software Development</option><option>Consulting</option><option>Data Analysis</option><option>Other</option></select></div>
+</div>
+
+<label>Project Scope *</label>
+<textarea id="scope" placeholder="Redesign their marketing site, add e-commerce, migrate from WordPress..."></textarea>
+
+<div class="grid">
+<div><label>Budget (optional)</label><input id="budget" placeholder="$15,000 - $20,000"></div>
+<div><label>Timeline (optional)</label><input id="timeline" placeholder="6 weeks"></div>
+</div>
+
+<div class="grid">
+<div><label>Your Name</label><input id="name" placeholder="Jane Smith"></div>
+<div><label>Your Company</label><input id="company" placeholder="Smith Digital"></div>
+</div>
+
+<label>Tone</label>
+<select id="tone"><option value="professional">Professional</option><option value="friendly">Friendly</option><option value="concise">Short & Direct</option><option value="premium">Premium / High-End</option></select>
+
+<button id="gen" onclick="generate()">Generate Proposal</button>
+<div id="result" style="display:none">
+<div class="output" id="output"></div>
+<button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('output').textContent);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy to clipboard',2000)">Copy to clipboard</button>
+</div>
+</div>
+
+<script>
+async function generate() {
+  const client = document.getElementById('client').value;
+  const scope = document.getElementById('scope').value;
+  if (!client || !scope) return;
+  const btn = document.getElementById('gen');
+  btn.disabled = true; btn.textContent = 'Writing...';
+  document.getElementById('result').style.display = 'none';
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({model: 'claude-sonnet-4-6', max_tokens: 1000,
+        messages: [{role: 'user', content: `Write a ${document.getElementById('tone').value} project proposal. No placeholder brackets. Ready to send.
+Client: ${client}
+Project: ${document.getElementById('type').value}
+Scope: ${scope}
+${document.getElementById('budget').value ? 'Budget: ' + document.getElementById('budget').value : ''}
+${document.getElementById('timeline').value ? 'Timeline: ' + document.getElementById('timeline').value : ''}
+From: ${document.getElementById('name').value || 'the consultant'}${document.getElementById('company').value ? ' at ' + document.getElementById('company').value : ''}
+
+Structure: Opening addressing client by name > Scope of Work (3-5 bullet deliverables) > Approach (2-3 sentences) > Timeline > Investment > Next steps with one clear CTA. No placeholders.`}]})
+    });
+    const d = await r.json();
+    document.getElementById('output').textContent = d.content?.map(i=>i.text||'').join('\n') || 'Error';
+    document.getElementById('result').style.display = 'block';
+  } catch(e) { document.getElementById('output').textContent = 'Error: ' + e.message; document.getElementById('result').style.display = 'block'; }
+  btn.disabled = false; btn.textContent = 'Generate Proposal';
+}
+</script>
+</body>
+</html>

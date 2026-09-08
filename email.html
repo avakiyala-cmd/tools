@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Cold Email Writer - Personalized Outreach in Seconds</title>
+<meta name="description" content="Generate personalized cold emails for sales, partnerships, and investor outreach. AI-powered, ready to send.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,sans-serif;color:#1a1a1a;background:#f8f9fa;min-height:100vh}
+.wrap{max-width:680px;margin:0 auto;padding:32px 20px}
+h1{font-size:28px;font-weight:700;letter-spacing:-0.02em;margin-bottom:4px}
+.sub{font-size:14px;color:#666;margin-bottom:32px}
+.badge{display:inline-block;background:#E3F2FD;color:#1565C0;font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;margin-bottom:16px}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:#333}
+input,textarea,select{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;margin-bottom:16px;font-family:inherit;background:#fff}
+textarea{min-height:80px;resize:vertical}
+select{background:#fff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+button{background:#1a1a1a;color:#fff;border:none;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;width:100%}
+button:disabled{background:#ccc;cursor:not-allowed}
+button:hover:not(:disabled){background:#333}
+.output{background:#fff;border:1px solid #eee;border-radius:8px;padding:24px;margin-top:24px;white-space:pre-wrap;font-size:14px;line-height:1.7}
+.copy-btn{background:#fff;border:1px solid #ddd;color:#333;padding:8px 16px;border-radius:6px;font-size:13px;cursor:pointer;margin-top:12px;width:auto;font-weight:500}
+.copy-btn:hover{border-color:#999}
+.count{text-align:center;font-size:12px;color:#999;margin-top:8px}
+.back{font-size:13px;color:#666;margin-bottom:24px;display:block}
+.back:hover{color:#333}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a href="/" class="back">← Back to all tools</a>
+<div class="badge">AI-POWERED</div>
+<h1>Cold Email Writer</h1>
+<p class="sub">Generate personalized outreach emails for sales, partnerships, investors, or press. Ready to send.</p>
+
+<div class="grid">
+<div>
+<label>Your Name / Company *</label>
+<input id="from" placeholder="Jane at Acme AI">
+</div>
+<div>
+<label>Recipient Type</label>
+<select id="recipient">
+<option>Potential Client</option>
+<option>Investor / VC</option>
+<option>Strategic Partner</option>
+<option>Press / Media</option>
+<option>Influencer / Creator</option>
+<option>Hiring / Recruiter</option>
+</select>
+</div>
+</div>
+
+<label>Recipient Name & Company (optional)</label>
+<input id="to" placeholder="Sarah Chen, VP Marketing at TechCorp">
+
+<label>What you want from them *</label>
+<textarea id="context" placeholder="Schedule a 15-minute demo of our AI inventory tool. They run 12 restaurant locations and currently use spreadsheets for ordering..."></textarea>
+
+<label>Your unique angle / why they should care</label>
+<input id="angle" placeholder="We reduced food waste 30% for similar chains. Their competitor just signed with us.">
+
+<div class="grid">
+<div>
+<label>Tone</label>
+<select id="tone">
+<option value="direct">Direct & Confident</option>
+<option value="friendly">Warm & Conversational</option>
+<option value="formal">Formal & Professional</option>
+<option value="casual">Casual & Brief</option>
+</select>
+</div>
+<div>
+<label>Length</label>
+<select id="length">
+<option value="short">Short (under 100 words)</option>
+<option value="medium">Medium (100-150 words)</option>
+<option value="long">Detailed (150-200 words)</option>
+</select>
+</div>
+</div>
+
+<button id="gen" onclick="generate()">Generate Cold Email</button>
+
+<div id="result" style="display:none">
+<div class="output" id="output"></div>
+<button class="copy-btn" onclick="copyText()">Copy to clipboard</button>
+</div>
+<div class="count" id="counter"></div>
+</div>
+
+<script>
+let count = 0;
+async function generate() {
+  const from = document.getElementById('from').value;
+  const context = document.getElementById('context').value;
+  if (!from || !context) return;
+  
+  const btn = document.getElementById('gen');
+  btn.disabled = true;
+  btn.textContent = 'Writing...';
+  document.getElementById('result').style.display = 'none';
+  
+  const to = document.getElementById('to').value;
+  const recipient = document.getElementById('recipient').value;
+  const angle = document.getElementById('angle').value;
+  const tone = document.getElementById('tone').value;
+  const length = document.getElementById('length').value;
+  
+  const lengthGuide = {short: 'under 80 words', medium: '100-150 words', long: '150-200 words'};
+  
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages: [{role: 'user', content: `Write a cold outreach email. ${lengthGuide[length]}. ${tone} tone. Ready to send - no placeholders.
+
+From: ${from}
+To: ${to || recipient}
+Type: ${recipient}
+What I want: ${context}
+${angle ? 'My angle: ' + angle : ''}
+
+Rules:
+- Include subject line
+- Open with something specific to THEM, not about you
+- No "I hope this finds you well" or similar filler
+- One clear ask at the end
+- No fake urgency
+- Sign off with just the name`}]
+      })
+    });
+    const d = await r.json();
+    const text = d.content?.map(i => i.text || '').join('\n') || 'Error generating. Try again.';
+    document.getElementById('output').textContent = text;
+    document.getElementById('result').style.display = 'block';
+    count++;
+    document.getElementById('counter').textContent = count + ' email' + (count > 1 ? 's' : '') + ' generated';
+  } catch(e) {
+    document.getElementById('output').textContent = 'Error: ' + e.message;
+    document.getElementById('result').style.display = 'block';
+  }
+  btn.disabled = false;
+  btn.textContent = 'Generate Cold Email';
+}
+
+function copyText() {
+  navigator.clipboard.writeText(document.getElementById('output').textContent);
+  event.target.textContent = 'Copied!';
+  setTimeout(() => event.target.textContent = 'Copy to clipboard', 2000);
+}
+</script>
+</body>
+</html>
