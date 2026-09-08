@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI Business Writer - Proposals, Emails, Plans, Posts | All-in-One</title>
+<meta name="description" content="One tool for all your business writing. Generate proposals, cold emails, business plans, pitch scripts, LinkedIn posts, and more. Free tier available.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',-apple-system,sans-serif;color:#1a1a1a;background:#f8f9fa}
+.wrap{max-width:680px;margin:0 auto;padding:32px 20px}
+h1{font-size:28px;font-weight:700;margin-bottom:4px;letter-spacing:-0.02em}
+.sub{font-size:14px;color:#666;margin-bottom:24px}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:#333}
+select,textarea,input{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;margin-bottom:16px;font-family:inherit;background:#fff}
+textarea{min-height:100px;resize:vertical}
+button{background:#1a1a1a;color:#fff;border:none;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;width:100%}
+button:disabled{background:#ccc;cursor:not-allowed}
+button:hover:not(:disabled){background:#333}
+.output{background:#fff;border:1px solid #eee;border-radius:8px;padding:24px;margin-top:24px;white-space:pre-wrap;font-size:14px;line-height:1.7}
+.copy-btn{background:#fff;border:1px solid #ddd;color:#333;padding:8px 16px;border-radius:6px;font-size:13px;cursor:pointer;margin-top:12px;width:auto;font-weight:500}
+.back{font-size:13px;color:#666;margin-bottom:24px;display:block;text-decoration:none}
+.counter{text-align:center;font-size:12px;color:#999;margin-top:12px}
+.badge{display:inline-block;background:#1a1a1a;color:#fff;font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pricing{background:#fff;border:1px solid #eee;border-radius:8px;padding:20px;margin-top:32px;text-align:center}
+.pricing h3{font-size:16px;margin-bottom:8px}
+.pricing p{font-size:13px;color:#666}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a href="/" class="back">&larr; Back to all tools</a>
+<div class="badge">ALL-IN-ONE AI WRITER</div>
+<h1>AI Business Writer</h1>
+<p class="sub">One tool for proposals, emails, plans, pitches, LinkedIn posts, and more. Pick a type, describe what you need, generate.</p>
+
+<label>What do you need?</label>
+<select id="type">
+<option value="proposal">Client Proposal</option>
+<option value="cold_email">Cold Outreach Email</option>
+<option value="business_plan">One-Page Business Plan</option>
+<option value="pitch">Investor Pitch Script (60 sec)</option>
+<option value="linkedin">LinkedIn Post</option>
+<option value="follow_up">Follow-Up Email</option>
+<option value="rejection">Polite Rejection / Decline</option>
+<option value="testimonial_request">Testimonial Request Email</option>
+<option value="partnership">Partnership Proposal</option>
+<option value="press_release">Press Release</option>
+<option value="job_post">Job Posting</option>
+<option value="product_description">Product Description</option>
+<option value="bio">Professional Bio</option>
+<option value="case_study">Case Study Outline</option>
+<option value="sow">Statement of Work</option>
+</select>
+
+<label>Context - tell me everything relevant *</label>
+<textarea id="context" placeholder="The more detail you give, the better the output. Include names, numbers, specifics, and what you want the reader to do after reading this."></textarea>
+
+<div class="grid">
+<div><label>Tone</label>
+<select id="tone">
+<option value="professional">Professional</option>
+<option value="friendly">Friendly</option>
+<option value="direct">Direct & Concise</option>
+<option value="formal">Formal</option>
+<option value="casual">Casual</option>
+</select></div>
+<div><label>Length</label>
+<select id="length">
+<option value="short">Short</option>
+<option value="medium">Medium</option>
+<option value="long">Detailed</option>
+</select></div>
+</div>
+
+<button id="gen" onclick="generate()">Generate</button>
+
+<div id="result" style="display:none">
+<div class="output" id="output"></div>
+<button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('output').textContent);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy to clipboard',2000)">Copy to clipboard</button>
+</div>
+
+<div class="counter" id="counter"></div>
+
+<div class="pricing">
+<h3>Want unlimited access?</h3>
+<p>This tool is free right now. We're launching a Pro plan soon with saved templates, team sharing, and export to PDF. <a href="mailto:avakiyala@gmail.com?subject=Pro%20Waitlist&body=Add%20me%20to%20the%20Pro%20waitlist.%0A%0AMy%20email%3A%20" style="color:#1565C0">Join the waitlist</a></p>
+</div>
+</div>
+
+<script>
+let count = parseInt(localStorage.getItem('writerCount') || '0');
+document.getElementById('counter').textContent = count > 0 ? count + ' documents generated' : '';
+
+const prompts = {
+proposal: 'Write a professional project proposal. Include: opening addressing the client, scope of work (3-5 deliverables), approach, timeline, investment, and next steps with one clear CTA.',
+cold_email: 'Write a cold outreach email. Include subject line. Under 150 words. Open with something specific to the recipient. One clear ask. No "hope this finds you well."',
+business_plan: 'Write a one-page business plan. Sections: Executive Summary (3 sentences), Problem, Solution, Target Market, Business Model, Competitive Advantage, Go-to-Market (3 steps), Financial Snapshot, Team Needs. 2-4 sentences each.',
+pitch: 'Write a 60-second investor pitch script. Under 200 words. Structure: Hook > Problem > Solution > Why now > Traction > Ask. Conversational and confident.',
+linkedin: 'Write a LinkedIn post. Under 200 words. Hook first line. Short paragraphs. No corporate jargon. End with engagement question or takeaway. Max 3 hashtags.',
+follow_up: 'Write a follow-up email. Short, not pushy. Reference the previous conversation. Add new value or information. One clear next step.',
+rejection: 'Write a polite decline/rejection. Brief, respectful, clear. Leave the door open for future opportunities if appropriate.',
+testimonial_request: 'Write an email requesting a testimonial from a happy client. Keep it easy for them - suggest specific questions they could answer.',
+partnership: 'Write a partnership proposal email. What you bring, what they bring, how it works, specific next step.',
+press_release: 'Write a press release. Include headline, dateline, lead paragraph (who/what/when/where/why), supporting details, quote, and boilerplate.',
+job_post: 'Write a job posting. Include role title, what the person will do (not a generic list), requirements (must-have vs nice-to-have), what you offer, and how to apply.',
+product_description: 'Write a product description. Lead with the benefit, not the feature. Include what it does, who it is for, and why it is better than alternatives.',
+bio: 'Write a professional bio. Third person. 100-150 words. Cover role, expertise, notable achievements, and a human detail.',
+case_study: 'Write a case study outline. Structure: Challenge (what problem the client faced), Solution (what you did), Results (specific metrics), Testimonial placeholder.',
+sow: 'Write a statement of work. Include: project overview, scope, deliverables, timeline with milestones, payment terms, assumptions, and acceptance criteria.'
+};
+
+async function generate() {
+const ctx = document.getElementById('context').value;
+if (!ctx) return;
+const btn = document.getElementById('gen');
+btn.disabled = true; btn.textContent = 'Writing...';
+document.getElementById('result').style.display = 'none';
+const type = document.getElementById('type').value;
+const tone = document.getElementById('tone').value;
+const length = document.getElementById('length').value;
+const lengthGuide = {short:'Keep it brief.',medium:'Medium length.',long:'Be thorough and detailed.'};
+try {
+const r = await fetch('https://api.anthropic.com/v1/messages', {
+method:'POST',headers:{'Content-Type':'application/json'},
+body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,
+messages:[{role:'user',content:`${prompts[type]} Tone: ${tone}. ${lengthGuide[length]} No placeholder brackets. Ready to use.\n\nContext: ${ctx}`}]})});
+const d = await r.json();
+document.getElementById('output').textContent = d.content?.map(i=>i.text||'').join('\n') || 'Error';
+document.getElementById('result').style.display = 'block';
+count++;
+localStorage.setItem('writerCount', count);
+document.getElementById('counter').textContent = count + ' documents generated';
+} catch(e) {
+document.getElementById('output').textContent = 'Error: ' + e.message;
+document.getElementById('result').style.display = 'block';
+}
+btn.disabled = false; btn.textContent = 'Generate';
+}
+</script>
+</body>
+</html>
