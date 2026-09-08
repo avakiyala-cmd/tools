@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI LinkedIn Post Generator - Viral Posts in Seconds</title>
+<meta name="description" content="Generate engaging LinkedIn posts with AI. Choose your topic, tone, and format. Get a ready-to-post LinkedIn update instantly.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',-apple-system,sans-serif;color:#1a1a1a;background:#f8f9fa}
+.wrap{max-width:680px;margin:0 auto;padding:32px 20px}h1{font-size:28px;font-weight:700;margin-bottom:4px;letter-spacing:-0.02em}.sub{font-size:14px;color:#666;margin-bottom:32px}
+.badge{display:inline-block;background:#E3F2FD;color:#1565C0;font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;margin-bottom:16px}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:#333}input,textarea,select{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;margin-bottom:16px;font-family:inherit;background:#fff}textarea{min-height:80px;resize:vertical}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+button{background:#1a1a1a;color:#fff;border:none;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;width:100%}button:disabled{background:#ccc;cursor:not-allowed}button:hover:not(:disabled){background:#333}
+.output{background:#fff;border:1px solid #eee;border-radius:8px;padding:24px;margin-top:24px;white-space:pre-wrap;font-size:14px;line-height:1.7}
+.copy-btn{background:#fff;border:1px solid #ddd;color:#333;padding:8px 16px;border-radius:6px;font-size:13px;cursor:pointer;margin-top:12px;width:auto;font-weight:500}
+.back{font-size:13px;color:#666;margin-bottom:24px;display:block;text-decoration:none}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a href="/" class="back">&larr; Back to all tools</a>
+<div class="badge">AI-POWERED</div>
+<h1>LinkedIn Post Generator</h1>
+<p class="sub">Write engaging LinkedIn posts that get reach. Pick a format, add your topic, done.</p>
+
+<label>What's the post about? *</label>
+<textarea id="topic" placeholder="I just closed my first $100K deal after 6 months of cold outreach. Here's what I learned..."></textarea>
+
+<div class="grid">
+<div><label>Format</label>
+<select id="format">
+<option value="story">Personal Story / Lesson</option>
+<option value="tips">Tips / How-to List</option>
+<option value="contrarian">Contrarian Take / Hot Take</option>
+<option value="milestone">Milestone / Achievement</option>
+<option value="question">Engagement Question</option>
+<option value="framework">Framework / Mental Model</option>
+</select></div>
+<div><label>Tone</label>
+<select id="tone">
+<option value="authentic">Authentic & Vulnerable</option>
+<option value="authoritative">Authoritative & Expert</option>
+<option value="casual">Casual & Relatable</option>
+<option value="inspiring">Inspiring & Motivational</option>
+</select></div>
+</div>
+
+<label>Your role / context (optional)</label>
+<input id="role" placeholder="Founder of an AI startup, 3 years in">
+
+<button id="gen" onclick="gen()">Generate LinkedIn Post</button>
+<div id="result" style="display:none">
+<div class="output" id="output"></div>
+<button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('output').textContent);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy to clipboard',2000)">Copy to clipboard</button>
+</div>
+</div>
+<script>
+async function gen(){
+const topic=document.getElementById('topic').value;if(!topic)return;
+const btn=document.getElementById('gen');btn.disabled=true;btn.textContent='Writing...';
+document.getElementById('result').style.display='none';
+const format=document.getElementById('format').value;
+const tone=document.getElementById('tone').value;
+const role=document.getElementById('role').value;
+const formats={story:'Tell a personal story with a clear lesson. Open with a hook line. Use short paragraphs (1-2 sentences each). End with a takeaway.',tips:'Write a numbered tips list. Open with a bold statement. Each tip is 1-2 sentences. End with a call to engage.',contrarian:'Take a contrarian position. Open with a provocative statement that challenges conventional wisdom. Back it up with reasoning. End with a question.',milestone:'Share a milestone or achievement. Be specific with numbers. Share what you learned, not just the win. Stay humble.',question:'Open with a thought-provoking question. Give your perspective in 3-4 short paragraphs. End by asking the audience to share theirs.',framework:'Share a mental model or framework. Give it a name. Explain it in 3-5 steps. Give one real example.'};
+try{
+const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:`Write a LinkedIn post. ${formats[format]} Tone: ${tone}. Under 200 words. No hashtags unless they add real value (max 3). No emojis in the first line.\n\nTopic: ${topic}\n${role?'Author context: '+role:''}\n\nRules:\n- First line must be a hook that stops scrolling\n- Short paragraphs (1-2 lines each)\n- Line breaks between paragraphs\n- No corporate jargon\n- Sound like a real person, not a content machine\n- End with engagement (question, CTA, or takeaway)`}]})});
+const d=await r.json();
+document.getElementById('output').textContent=d.content?.map(i=>i.text||'').join('\n')||'Error';
+document.getElementById('result').style.display='block';
+}catch(e){document.getElementById('output').textContent='Error: '+e.message;document.getElementById('result').style.display='block';}
+btn.disabled=false;btn.textContent='Generate LinkedIn Post';
+}
+</script>
+</body>
+</html>

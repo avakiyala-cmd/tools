@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Free Invoice Generator - Create Professional Invoices Instantly</title>
+<meta name="description" content="Create professional invoices for free. Add your business details, line items, and download or print. No sign-up required.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',-apple-system,sans-serif;color:#1a1a1a;background:#f8f9fa}
+.wrap{max-width:760px;margin:0 auto;padding:32px 20px}h1{font-size:28px;font-weight:700;margin-bottom:4px;letter-spacing:-0.02em}.sub{font-size:14px;color:#666;margin-bottom:32px}
+.badge{display:inline-block;background:#E8F5E9;color:#2E7D32;font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;margin-bottom:16px}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:#333}input,textarea{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;margin-bottom:12px;font-family:inherit;background:#fff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid-4{display:grid;grid-template-columns:3fr 1fr 1fr 1fr auto;gap:8px;align-items:end;margin-bottom:8px}.grid-4 input{margin-bottom:0;font-size:13px;padding:8px}
+button{background:#1a1a1a;color:#fff;border:none;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;width:100%}button:hover{background:#333}
+.add-btn{background:#f0f0f0;color:#333;border:1px solid #ddd;padding:8px 16px;font-size:13px;width:auto;margin:8px 0 24px}
+.invoice{background:#fff;border:1px solid #eee;border-radius:8px;padding:40px;margin-top:24px}
+.inv-header{display:flex;justify-content:space-between;margin-bottom:32px}.inv-header h2{font-size:24px}.inv-num{color:#666;font-size:14px}
+.inv-parties{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px;font-size:13px}.inv-parties strong{display:block;margin-bottom:4px;font-size:14px}
+.inv-table{width:100%;border-collapse:collapse;margin-bottom:24px}.inv-table th{text-align:left;padding:8px 0;border-bottom:2px solid #1a1a1a;font-size:12px;text-transform:uppercase;color:#666}.inv-table td{padding:10px 0;border-bottom:1px solid #eee;font-size:14px}.inv-table .right{text-align:right}
+.inv-total{text-align:right;font-size:14px}.inv-total .line{display:flex;justify-content:flex-end;gap:40px;padding:4px 0}.inv-total .grand{font-size:18px;font-weight:700;border-top:2px solid #1a1a1a;padding-top:8px;margin-top:8px}
+.print-btn{background:#fff;border:1px solid #ddd;color:#333;padding:10px 20px;font-size:13px;width:auto;margin-top:16px}
+.back{font-size:13px;color:#666;margin-bottom:24px;display:block;text-decoration:none}
+@media print{.no-print{display:none!important}.invoice{border:none;padding:0;box-shadow:none}}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.grid-4{grid-template-columns:2fr 1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="no-print">
+<a href="/" class="back">&larr; Back to all tools</a>
+<div class="badge">FREE TOOL</div>
+<h1>Invoice Generator</h1>
+<p class="sub">Create a professional invoice. Fill in the details below, then print or save as PDF.</p>
+
+<div class="grid">
+<div>
+<label>Your Business Name</label><input id="bizName" placeholder="Smith Digital LLC">
+<label>Your Address</label><input id="bizAddr" placeholder="123 Main St, New York, NY">
+<label>Your Email</label><input id="bizEmail" placeholder="jane@smithdigital.com">
+</div>
+<div>
+<label>Client Name</label><input id="clientName" placeholder="Acme Corp">
+<label>Client Address</label><input id="clientAddr" placeholder="456 Oak Ave, San Francisco, CA">
+<label>Client Email</label><input id="clientEmail" placeholder="billing@acmecorp.com">
+</div>
+</div>
+
+<div class="grid">
+<div><label>Invoice Number</label><input id="invNum" placeholder="INV-001"></div>
+<div><label>Date</label><input id="invDate" type="date"></div>
+</div>
+
+<label style="margin-top:16px">Line Items</label>
+<div class="grid-4">
+<div><label style="font-size:11px">Description</label></div>
+<div><label style="font-size:11px">Qty</label></div>
+<div><label style="font-size:11px">Rate ($)</label></div>
+<div><label style="font-size:11px">Amount</label></div>
+<div></div>
+</div>
+<div id="items">
+<div class="grid-4 item-row">
+<input placeholder="Web design" class="desc"><input type="number" value="1" class="qty"><input type="number" value="0" class="rate"><input readonly class="amt" style="background:#f8f9fa"><span style="cursor:pointer;color:#ccc;font-size:16px" onclick="this.closest('.item-row').remove();calc()">x</span>
+</div>
+</div>
+<button class="add-btn" onclick="addItem()">+ Add line item</button>
+
+<div class="grid">
+<div><label>Tax Rate (%)</label><input id="tax" type="number" value="0" placeholder="0"></div>
+<div><label>Notes</label><input id="notes" placeholder="Payment due within 30 days"></div>
+</div>
+
+<button onclick="generateInvoice()">Generate Invoice</button>
+</div>
+
+<div id="invoiceOutput" style="display:none">
+<div class="invoice" id="invoicePrint">
+<div class="inv-header">
+<div><h2 id="o-biz"></h2><span id="o-bizAddr" style="font-size:13px;color:#666"></span><br><span id="o-bizEmail" style="font-size:13px;color:#666"></span></div>
+<div style="text-align:right"><span style="font-size:28px;font-weight:700;color:#ccc">INVOICE</span><br><span class="inv-num" id="o-num"></span><br><span class="inv-num" id="o-date"></span></div>
+</div>
+<div class="inv-parties"><div><strong>Bill To</strong><span id="o-client"></span><br><span id="o-clientAddr" style="color:#666"></span><br><span id="o-clientEmail" style="color:#666"></span></div></div>
+<table class="inv-table"><thead><tr><th>Description</th><th class="right">Qty</th><th class="right">Rate</th><th class="right">Amount</th></tr></thead><tbody id="o-items"></tbody></table>
+<div class="inv-total"><div class="line"><span>Subtotal</span><span id="o-sub"></span></div><div class="line"><span id="o-taxLabel">Tax (0%)</span><span id="o-tax"></span></div><div class="line grand"><span>Total</span><span id="o-total"></span></div></div>
+<div style="margin-top:24px;font-size:13px;color:#666" id="o-notes"></div>
+</div>
+<div class="no-print" style="text-align:center;margin-top:16px">
+<button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+</div>
+</div>
+</div>
+
+<script>
+document.getElementById('invDate').value=new Date().toISOString().split('T')[0];
+function addItem(){const d=document.createElement('div');d.className='grid-4 item-row';d.innerHTML='<input placeholder="Description" class="desc"><input type="number" value="1" class="qty"><input type="number" value="0" class="rate"><input readonly class="amt" style="background:#f8f9fa"><span style="cursor:pointer;color:#ccc;font-size:16px" onclick="this.closest(\'.item-row\').remove();calc()">x</span>';document.getElementById('items').appendChild(d);}
+function calc(){document.querySelectorAll('.item-row').forEach(r=>{const q=parseFloat(r.querySelector('.qty').value)||0;const rt=parseFloat(r.querySelector('.rate').value)||0;r.querySelector('.amt').value='$'+(q*rt).toFixed(2);});}
+document.getElementById('items').addEventListener('input',calc);
+function generateInvoice(){calc();
+document.getElementById('o-biz').textContent=document.getElementById('bizName').value;
+document.getElementById('o-bizAddr').textContent=document.getElementById('bizAddr').value;
+document.getElementById('o-bizEmail').textContent=document.getElementById('bizEmail').value;
+document.getElementById('o-num').textContent=document.getElementById('invNum').value;
+document.getElementById('o-date').textContent=document.getElementById('invDate').value;
+document.getElementById('o-client').textContent=document.getElementById('clientName').value;
+document.getElementById('o-clientAddr').textContent=document.getElementById('clientAddr').value;
+document.getElementById('o-clientEmail').textContent=document.getElementById('clientEmail').value;
+document.getElementById('o-notes').textContent=document.getElementById('notes').value;
+const tbody=document.getElementById('o-items');tbody.innerHTML='';let sub=0;
+document.querySelectorAll('.item-row').forEach(r=>{const desc=r.querySelector('.desc').value;const q=parseFloat(r.querySelector('.qty').value)||0;const rt=parseFloat(r.querySelector('.rate').value)||0;const amt=q*rt;sub+=amt;
+const tr=document.createElement('tr');tr.innerHTML=`<td>${desc}</td><td class="right">${q}</td><td class="right">$${rt.toFixed(2)}</td><td class="right">$${amt.toFixed(2)}</td>`;tbody.appendChild(tr);});
+const taxRate=parseFloat(document.getElementById('tax').value)||0;const taxAmt=sub*(taxRate/100);
+document.getElementById('o-sub').textContent='$'+sub.toFixed(2);
+document.getElementById('o-taxLabel').textContent=`Tax (${taxRate}%)`;
+document.getElementById('o-tax').textContent='$'+taxAmt.toFixed(2);
+document.getElementById('o-total').textContent='$'+(sub+taxAmt).toFixed(2);
+document.getElementById('invoiceOutput').style.display='block';
+document.getElementById('invoiceOutput').scrollIntoView({behavior:'smooth'});}
+</script>
+</body>
+</html>
