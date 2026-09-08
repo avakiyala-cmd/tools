@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Startup Costs Calculator 2026 - How Much Does It Cost to Start a Business?</title>
+<meta name="description" content="Calculate your startup costs. Enter your business type and get a realistic estimate of one-time and monthly expenses. Free calculator.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',-apple-system,sans-serif;color:#1a1a1a;background:#f8f9fa}.wrap{max-width:680px;margin:0 auto;padding:32px 20px}h1{font-size:28px;font-weight:700;margin-bottom:4px;letter-spacing:-0.02em}.sub{font-size:14px;color:#666;margin-bottom:32px}label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:#333}input,select{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;margin-bottom:12px;background:#fff;font-family:inherit}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}button{background:#1a1a1a;color:#fff;border:none;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;width:100%}button:hover{background:#333}.result{background:#fff;border:1px solid #eee;border-radius:8px;padding:24px;margin-top:24px}.row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px}.row .l{color:#666}.row .v{font-weight:600}.row.total{font-size:18px;border-top:2px solid #1a1a1a;border-bottom:none;padding-top:16px;margin-top:8px}.row.total .v{color:#1B5E20}.section-title{font-size:16px;font-weight:700;margin:20px 0 8px;padding-top:12px;border-top:1px solid #eee}.cta-box{background:#f0f0f0;border-radius:8px;padding:20px;margin-top:24px;text-align:center;font-size:14px}.cta-box a{color:#1565C0;font-weight:600}.back{font-size:13px;color:#666;margin-bottom:24px;display:block;text-decoration:none}</style>
+</head>
+<body>
+<div class="wrap">
+<a href="/" class="back">&larr; Back to all tools</a>
+<h1>Startup Costs Calculator</h1>
+<p class="sub">Estimate your first-year costs based on your business type. Adjust any number.</p>
+
+<label>Business Type</label>
+<select id="bizType" onchange="prefill()">
+<option value="saas">SaaS / Software</option>
+<option value="ecommerce">E-commerce / Online Store</option>
+<option value="agency">Agency / Consulting</option>
+<option value="restaurant">Restaurant / Food</option>
+<option value="freelance">Freelance / Solo Service</option>
+<option value="retail">Retail / Physical Store</option>
+</select>
+
+<div class="section-title">One-Time Costs</div>
+<div class="grid">
+<div><label>Legal / Incorporation ($)</label><input type="number" id="c-legal" value="500"></div>
+<div><label>Branding / Logo ($)</label><input type="number" id="c-brand" value="500"></div>
+<div><label>Website / App Build ($)</label><input type="number" id="c-web" value="2000"></div>
+<div><label>Equipment ($)</label><input type="number" id="c-equip" value="1000"></div>
+<div><label>Initial Inventory ($)</label><input type="number" id="c-inv" value="0"></div>
+<div><label>Other One-Time ($)</label><input type="number" id="c-other" value="500"></div>
+</div>
+
+<div class="section-title">Monthly Costs</div>
+<div class="grid">
+<div><label>Rent / Office ($)</label><input type="number" id="m-rent" value="0"></div>
+<div><label>Salaries ($)</label><input type="number" id="m-sal" value="0"></div>
+<div><label>Marketing ($)</label><input type="number" id="m-mkt" value="500"></div>
+<div><label>Software / Tools ($)</label><input type="number" id="m-sw" value="200"></div>
+<div><label>Insurance ($)</label><input type="number" id="m-ins" value="100"></div>
+<div><label>Other Monthly ($)</label><input type="number" id="m-other" value="200"></div>
+</div>
+
+<button onclick="calc()">Calculate Total First-Year Cost</button>
+
+<div id="result" style="display:none" class="result">
+<div class="row"><span class="l">Total One-Time Costs</span><span class="v" id="r-onetime"></span></div>
+<div class="row"><span class="l">Monthly Costs</span><span class="v" id="r-monthly"></span></div>
+<div class="row"><span class="l">Annual Operating (12 months)</span><span class="v" id="r-annual"></span></div>
+<div class="row total"><span class="l">Total First-Year Cost</span><span class="v" id="r-total"></span></div>
+<div class="row" style="border:none;padding-top:16px"><span class="l">Cash needed before revenue (3-month buffer)</span><span class="v" id="r-buffer"></span></div>
+</div>
+
+<div class="cta-box">
+Need a detailed 12-month budget? <a href="https://avaflow801.gumroad.com/l/aiiuvn">Get the Startup Budget & Runway Calculator ($29)</a>
+</div>
+</div>
+
+<script>
+const presets={saas:{legal:500,brand:500,web:3000,equip:1500,inv:0,other:500,rent:0,sal:0,mkt:500,sw:300,ins:100,other2:200},ecommerce:{legal:500,brand:1000,web:2000,equip:500,inv:5000,other:1000,rent:0,sal:0,mkt:1000,sw:200,ins:150,other2:300},agency:{legal:500,brand:1000,web:1500,equip:2000,inv:0,other:500,rent:500,sal:0,mkt:500,sw:300,ins:200,other2:200},restaurant:{legal:2000,brand:1500,web:1000,equip:15000,inv:3000,other:5000,rent:3000,sal:5000,mkt:500,sw:100,ins:500,other2:500},freelance:{legal:200,brand:300,web:500,equip:1500,inv:0,other:200,rent:0,sal:0,mkt:200,sw:100,ins:100,other2:100},retail:{legal:1000,brand:1000,web:1000,equip:5000,inv:10000,other:2000,rent:2000,sal:3000,mkt:500,sw:100,ins:300,other2:300}};
+function prefill(){const p=presets[document.getElementById('bizType').value];document.getElementById('c-legal').value=p.legal;document.getElementById('c-brand').value=p.brand;document.getElementById('c-web').value=p.web;document.getElementById('c-equip').value=p.equip;document.getElementById('c-inv').value=p.inv;document.getElementById('c-other').value=p.other;document.getElementById('m-rent').value=p.rent;document.getElementById('m-sal').value=p.sal;document.getElementById('m-mkt').value=p.mkt;document.getElementById('m-sw').value=p.sw;document.getElementById('m-ins').value=p.ins;document.getElementById('m-other').value=p.other2;}
+function calc(){const g=id=>parseFloat(document.getElementById(id).value)||0;
+const onetime=g('c-legal')+g('c-brand')+g('c-web')+g('c-equip')+g('c-inv')+g('c-other');
+const monthly=g('m-rent')+g('m-sal')+g('m-mkt')+g('m-sw')+g('m-ins')+g('m-other');
+const annual=monthly*12;const total=onetime+annual;const buffer=onetime+monthly*3;
+const f=n=>'$'+n.toLocaleString();
+document.getElementById('r-onetime').textContent=f(onetime);
+document.getElementById('r-monthly').textContent=f(monthly)+'/mo';
+document.getElementById('r-annual').textContent=f(annual);
+document.getElementById('r-total').textContent=f(total);
+document.getElementById('r-buffer').textContent=f(buffer);
+document.getElementById('result').style.display='block';}
+</script>
+</body>
+</html>
