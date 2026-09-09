@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI Contract Generator - Freelance Agreements & SOWs in Seconds</title>
+<meta name="description" content="Generate freelance contracts, service agreements, NDAs, and statements of work with AI. Free, instant, ready to customize.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',-apple-system,sans-serif;color:#1a1a1a;background:#f8f9fa}.wrap{max-width:680px;margin:0 auto;padding:32px 20px}h1{font-size:28px;font-weight:700;margin-bottom:4px;letter-spacing:-0.02em}.sub{font-size:14px;color:#666;margin-bottom:32px}label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:#333}input,textarea,select{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;margin-bottom:16px;font-family:inherit;background:#fff}textarea{min-height:80px;resize:vertical}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}button{background:#1a1a1a;color:#fff;border:none;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;width:100%}button:disabled{background:#ccc;cursor:not-allowed}button:hover:not(:disabled){background:#333}.output{background:#fff;border:1px solid #eee;border-radius:8px;padding:24px;margin-top:24px;white-space:pre-wrap;font-size:14px;line-height:1.7}.copy-btn{background:#fff;border:1px solid #ddd;color:#333;padding:8px 16px;border-radius:6px;font-size:13px;cursor:pointer;margin-top:12px;width:auto;font-weight:500}.back{font-size:13px;color:#666;margin-bottom:24px;display:block;text-decoration:none}.badge{display:inline-block;background:#F3E5F5;color:#7B1FA2;font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;margin-bottom:16px}.warn{background:#FFF3E0;border:1px solid #FFE0B2;border-radius:6px;padding:12px 16px;font-size:12px;color:#E65100;margin-bottom:24px}@media(max-width:600px){.grid{grid-template-columns:1fr}}</style>
+</head>
+<body>
+<div class="wrap">
+<a href="/" class="back">&larr; Back to all tools</a>
+<div class="badge">AI-POWERED</div>
+<h1>Contract & Agreement Generator</h1>
+<p class="sub">Generate freelance contracts, service agreements, NDAs, and SOWs. Starting point for your legal documents.</p>
+<div class="warn">This generates a starting draft, not legal advice. Have a lawyer review any contract before signing.</div>
+
+<label>Contract Type *</label>
+<select id="type">
+<option value="freelance">Freelance Service Agreement</option>
+<option value="nda">Non-Disclosure Agreement (NDA)</option>
+<option value="sow">Statement of Work (SOW)</option>
+<option value="consulting">Consulting Agreement</option>
+<option value="saas">SaaS Terms of Service</option>
+<option value="partnership">Partnership Agreement</option>
+<option value="employment">Employment Offer Letter</option>
+<option value="subcontractor">Subcontractor Agreement</option>
+</select>
+
+<div class="grid">
+<div><label>Your Name / Company *</label><input id="party1" placeholder="Smith Digital LLC"></div>
+<div><label>Other Party *</label><input id="party2" placeholder="Acme Corp"></div>
+</div>
+
+<label>Key Terms & Details *</label>
+<textarea id="terms" placeholder="Project: Website redesign. Fee: $15,000 flat. Timeline: 8 weeks. Payment: 50% upfront, 50% on delivery. Includes 2 revision rounds. IP transfers on final payment."></textarea>
+
+<div class="grid">
+<div><label>Governing Law / Jurisdiction</label><input id="jurisdiction" placeholder="State of Delaware, USA"></div>
+<div><label>Contract Duration</label><input id="duration" placeholder="6 months, auto-renewing"></div>
+</div>
+
+<button id="gen" onclick="gen()">Generate Contract Draft</button>
+<div id="result" style="display:none">
+<div class="output" id="output"></div>
+<button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('output').textContent);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy to clipboard',2000)">Copy to clipboard</button>
+</div>
+</div>
+<script>
+async function gen(){
+const p1=document.getElementById('party1').value,p2=document.getElementById('party2').value,terms=document.getElementById('terms').value;
+if(!p1||!p2||!terms)return;
+const btn=document.getElementById('gen');btn.disabled=true;btn.textContent='Drafting...';
+document.getElementById('result').style.display='none';
+const type=document.getElementById('type').value;
+const juris=document.getElementById('jurisdiction').value;
+const dur=document.getElementById('duration').value;
+const types={freelance:'freelance service agreement with payment terms, IP assignment, termination, liability limitation, and indemnification clauses',nda:'mutual non-disclosure agreement with definition of confidential information, obligations, duration, and permitted disclosures',sow:'statement of work with project scope, deliverables, timeline, acceptance criteria, and change order process',consulting:'consulting agreement with scope, fees, expenses, confidentiality, non-compete, IP, and termination clauses',saas:'SaaS terms of service with account terms, acceptable use, billing, data handling, SLA, liability, and termination',partnership:'partnership agreement with roles, profit sharing, capital contributions, decision making, dissolution, and non-compete',employment:'employment offer letter with position, compensation, benefits, start date, at-will clause, and confidentiality',subcontractor:'subcontractor agreement with scope, payment, insurance requirements, independent contractor status, and IP assignment'};
+try{
+const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:`Draft a ${types[type]}.\n\nParty A: ${p1}\nParty B: ${p2}\nKey terms: ${terms}\n${juris?'Governing law: '+juris:''}\n${dur?'Duration: '+dur:''}\n\nWrite it in standard contract format with numbered sections. Use plain English, not excessive legalese. Include all standard protective clauses for both parties. This is a draft starting point, not final legal document.`}]})});
+const d=await r.json();
+document.getElementById('output').textContent=d.content?.map(i=>i.text||'').join('\n')||'Error';
+document.getElementById('result').style.display='block';
+}catch(e){document.getElementById('output').textContent='Error: '+e.message;document.getElementById('result').style.display='block';}
+btn.disabled=false;btn.textContent='Generate Contract Draft';
+}
+</script>
+</body>
+</html>

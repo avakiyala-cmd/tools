@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI Pitch Deck Generator - Investor Pitch Outline in 30 Seconds</title>
+<meta name="description" content="Generate a 10-slide investor pitch deck outline with AI. Enter your startup details, get slide-by-slide content and speaker notes instantly.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',-apple-system,sans-serif;color:#1a1a1a;background:#f8f9fa}.wrap{max-width:680px;margin:0 auto;padding:32px 20px}h1{font-size:28px;font-weight:700;margin-bottom:4px;letter-spacing:-0.02em}.sub{font-size:14px;color:#666;margin-bottom:32px}label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:#333}input,textarea,select{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;margin-bottom:16px;font-family:inherit;background:#fff}textarea{min-height:80px;resize:vertical}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}button{background:#1a1a1a;color:#fff;border:none;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;width:100%}button:disabled{background:#ccc;cursor:not-allowed}button:hover:not(:disabled){background:#333}.output{background:#fff;border:1px solid #eee;border-radius:8px;padding:24px;margin-top:24px;white-space:pre-wrap;font-size:14px;line-height:1.7}.copy-btn{background:#fff;border:1px solid #ddd;color:#333;padding:8px 16px;border-radius:6px;font-size:13px;cursor:pointer;margin-top:12px;width:auto;font-weight:500}.back{font-size:13px;color:#666;margin-bottom:24px;display:block;text-decoration:none}.badge{display:inline-block;background:#E3F2FD;color:#1565C0;font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;margin-bottom:16px}.upsell{background:#f0f7ff;border:1px solid #BBDEFB;border-radius:8px;padding:20px;margin-top:24px;text-align:center;font-size:14px}.upsell a{color:#1565C0;font-weight:600}@media(max-width:600px){.grid{grid-template-columns:1fr}}</style>
+</head>
+<body>
+<div class="wrap">
+<a href="/" class="back">&larr; Back to all tools</a>
+<div class="badge">AI-POWERED</div>
+<h1>Pitch Deck Generator</h1>
+<p class="sub">Get a 10-slide investor pitch deck outline with content and speaker notes for each slide.</p>
+
+<label>Company Name *</label>
+<input id="company" placeholder="Acme AI">
+
+<label>What does your company do? *</label>
+<textarea id="desc" placeholder="AI-powered inventory management for independent restaurants. We predict daily demand and auto-generate purchase orders, reducing food waste by 30%."></textarea>
+
+<div class="grid">
+<div><label>Stage</label><select id="stage"><option>Pre-seed</option><option>Seed</option><option>Series A</option><option>Series B+</option></select></div>
+<div><label>Raising ($)</label><input id="raise" placeholder="$500K"></div>
+</div>
+
+<label>Key metrics / traction (optional)</label>
+<input id="traction" placeholder="12 restaurants, $8K MRR, 40% MoM growth, 2% churn">
+
+<label>Team highlights (optional)</label>
+<input id="team" placeholder="Ex-Google engineer, restaurant industry veteran with 15 years">
+
+<button id="gen" onclick="gen()">Generate Pitch Deck Outline</button>
+<div id="result" style="display:none">
+<div class="output" id="output"></div>
+<button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('output').textContent);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy to clipboard',2000)">Copy to clipboard</button>
+<div class="upsell">
+<strong>Want the full pitch deck built for you?</strong><br>
+Our team builds custom investor pitch decks with financial models starting at $1,500.<br>
+<a href="/services.html">View our services</a> or <a href="mailto:avakiyala@gmail.com?subject=Pitch%20Deck%20-%20Full%20Build">email us directly</a>.
+</div>
+</div>
+</div>
+<script>
+async function gen(){
+const company=document.getElementById('company').value,desc=document.getElementById('desc').value;
+if(!company||!desc)return;
+const btn=document.getElementById('gen');btn.disabled=true;btn.textContent='Building deck outline...';
+document.getElementById('result').style.display='none';
+try{
+const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:`Create a 10-slide investor pitch deck outline for:\n\nCompany: ${company}\nDescription: ${desc}\nStage: ${document.getElementById('stage').value}\nRaising: ${document.getElementById('raise').value||'Not specified'}\nTraction: ${document.getElementById('traction').value||'Early stage'}\nTeam: ${document.getElementById('team').value||'Not specified'}\n\nFor each slide, provide:\n- SLIDE NUMBER and TITLE\n- KEY CONTENT (bullet points of what goes on the slide)\n- SPEAKER NOTES (2-3 sentences of what to say)\n\nSlide order: Title/Hook > Problem > Solution > Market Size > Product/Demo > Business Model > Traction > Competition > Team > The Ask\n\nBe specific to this business. No generic placeholder content.`}]})});
+const d=await r.json();
+document.getElementById('output').textContent=d.content?.map(i=>i.text||'').join('\n')||'Error';
+document.getElementById('result').style.display='block';
+}catch(e){document.getElementById('output').textContent='Error: '+e.message;document.getElementById('result').style.display='block';}
+btn.disabled=false;btn.textContent='Generate Pitch Deck Outline';
+}
+</script>
+</body>
+</html>
