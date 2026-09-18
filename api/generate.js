@@ -48,4 +48,3 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: error.message });
   }
 }
-<!-- env refresh Fri Sep 18 04:09:04 UTC 2026 -->
