@@ -114,7 +114,7 @@ async function generate() {
   const lengthGuide = {short: 'under 80 words', medium: '100-150 words', long: '150-200 words'};
   
   try {
-    const r = await fetch('https://api.anthropic.com/v1/messages', {
+    const r = await fetch('/api/generate', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({

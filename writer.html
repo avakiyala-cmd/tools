@@ -122,9 +122,7 @@ const tone = document.getElementById('tone').value;
 const length = document.getElementById('length').value;
 const lengthGuide = {short:'Keep it brief.',medium:'Medium length.',long:'Be thorough and detailed.'};
 try {
-const r = await fetch('https://api.anthropic.com/v1/messages', {
-method:'POST',headers:{'Content-Type':'application/json'},
-body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,
+const r = await fetch('/api/generate', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({
 messages:[{role:'user',content:`${prompts[type]} Tone: ${tone}. ${lengthGuide[length]} No placeholder brackets. Ready to use.\n\nContext: ${ctx}`}]})});
 const d = await r.json();
 document.getElementById('output').textContent = d.content?.map(i=>i.text||'').join('\n') || 'Error';

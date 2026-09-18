@@ -71,7 +71,7 @@ async function generate() {
   btn.disabled = true; btn.textContent = 'Writing...';
   document.getElementById('result').style.display = 'none';
   try {
-    const r = await fetch('https://api.anthropic.com/v1/messages', {
+    const r = await fetch('/api/generate', {
       method: 'POST', headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({model: 'claude-sonnet-4-6', max_tokens: 1000,
         messages: [{role: 'user', content: `Write a ${document.getElementById('tone').value} project proposal. No placeholder brackets. Ready to send.

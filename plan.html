@@ -74,7 +74,7 @@ async function callAI(prompt) {
   const btns=document.querySelectorAll('button:not(.copy-btn)');
   btns.forEach(b=>{b.disabled=true;b.dataset.orig=b.textContent;b.textContent='Writing...'});
   try {
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
     const d=await r.json();
     document.getElementById('output').textContent=d.content?.map(i=>i.text||'').join('\n')||'Error';
     document.getElementById('result').style.display='block';
